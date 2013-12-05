@@ -5,7 +5,7 @@ Videogular controls plugin repository for distribution on `bower`.
 
 ## Install
 
-Install [Videogular](http://www.videogular.com/) with Bower:
+Install [Videogular](http://www.videogular.com/) `controls` plugin with Bower:
 
 `bower install videogular-controls`
 

@@ -1,13 +1,15 @@
 bower-videogular-controls
 =========================
 
-Videogular controls plugin repository for distribution on `bower`.
+Videogular `controls` plugin repository for distribution on `bower`.
 
 ## Install
 
 Install [Videogular](http://www.videogular.com/) `controls` plugin with Bower:
 
 `bower install videogular-controls`
+
+Inside the folder `bower_components\videogular-controls` you should find also `html` partials that you should locate in `.\views\videogular\plugins\controls\`.
 
 ### Install Videogular
 

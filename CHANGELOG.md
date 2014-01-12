@@ -1,6 +1,9 @@
 CHANGELOG
 ================
 
+## v0.3.0
+* No changes.
+
 ## v0.2.0
 * Support for full screen on devices without native full screen.
 * Removed `$rootScope` dependencies.

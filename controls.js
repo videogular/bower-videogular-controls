@@ -98,9 +98,9 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					vgPlayIcon: "=",
 					vgPauseIcon: "="
 				},
-				controller: function ($scope){
+				controller: ['$scope', function ($scope) {
 					$scope.currentIcon = $.parseHTML($scope.vgPlayIcon)[0].data;
-				},
+				}],
 				link: function(scope, elem, attr, API) {
 					function onChangeState(target, params) {
 						switch (params[0]) {
@@ -439,14 +439,14 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					vgVolumeLevel0Icon: "=",
 					vgMuteIcon: "="
 				},
-				controller: function ($scope){
+				controller: ['$scope', function ($scope) {
 					$scope.muteIcon = $.parseHTML($scope.vgMuteIcon)[0].data;
 					$scope.volumeLevel0Icon = $.parseHTML($scope.vgVolumeLevel0Icon)[0].data;
 					$scope.volumeLevel1Icon = $.parseHTML($scope.vgVolumeLevel1Icon)[0].data;
 					$scope.volumeLevel2Icon = $.parseHTML($scope.vgVolumeLevel2Icon)[0].data;
 					$scope.volumeLevel3Icon = $.parseHTML($scope.vgVolumeLevel3Icon)[0].data;
 					$scope.currentIcon = $scope.volumeLevel3Icon;
-				},
+				}],
 				template: "<div class='iconButton'>{{currentIcon}}</div>",
 				link: function(scope, elem, attr, API) {
 					function onClickMute(event) {
@@ -517,11 +517,11 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					vgEnterFullScreenIcon: "=",
 					vgExitFullScreenIcon: "="
 				},
-				controller: function ($scope){
+				controller: ['$scope', function ($scope) {
 					$scope.enterFullScreenIcon = $.parseHTML($scope.vgEnterFullScreenIcon)[0].data;
 					$scope.exitFullScreenIcon = $.parseHTML($scope.vgExitFullScreenIcon)[0].data;
 					$scope.currentIcon = $scope.enterFullScreenIcon;
-				},
+				}],
 				template: "<div class='iconButton'>{{currentIcon}}</div>",
 				link: function(scope, elem, attr, API) {
 					function onEnterFullScreen() {

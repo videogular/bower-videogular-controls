@@ -1,5 +1,8 @@
 CHANGELOG
 ================
+## v0.4.2
+* Added seek by seconds or percentage passing a parameter.
+
 ## v0.4.1
 * Fixed bug in vgScrubbarcurrenttime, it wasn't updating the current time.
 

@@ -1,6 +1,6 @@
 {
   "name": "videogular-controls",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "main": "./controls.js",
   "dependencies": {
     "videogular": "latest"

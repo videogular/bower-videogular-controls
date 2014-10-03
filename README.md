@@ -1,5 +1,6 @@
 bower-videogular-controls
 =========================
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/2fdevs/bower-videogular-controls?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Videogular `controls` plugin repository for distribution on `bower`.
 

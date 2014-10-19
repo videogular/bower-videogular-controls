@@ -1,5 +1,5 @@
 /**
- * @license Videogular v0.6.0 http://videogular.com
+ * @license Videogular v0.6.1 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -7,12 +7,12 @@
 angular.module("com.2fdevs.videogular.plugins.controls", [])
 	.directive(
 	"vgControls",
-	["$timeout", "VG_STATES", function ($timeout, VG_STATES) {
+	["$timeout", function ($timeout) {
 		return {
 			restrict: "E",
 			require: "^videogular",
 			transclude: true,
-			template: '<div id="controls-container" ng-mousemove="onMouseMove()" ng-class="animationClass" ng-transclude></div>',
+			template: '<div id="controls-container" ng-class="animationClass" ng-transclude></div>',
 			scope: {
 				autoHide: "=vgAutohide",
 				autoHideTime: "=vgAutohideTime"
@@ -23,9 +23,12 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 				var autoHideTime = 2000;
 				var hideInterval;
 
-				scope.onMouseMove = function onMouseMove() {
-					if (scope.autoHide) showControls();
-				};
+				function onMouseMove() {
+					if (scope.autoHide) {
+						showControls();
+						scope.$apply();
+					}
+				}
 
 				function hideControls() {
 					scope.animationClass = "hide-animation";
@@ -42,10 +45,12 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					scope.$watch("autoHide", function (value) {
 						if (value) {
 							scope.animationClass = "hide-animation";
+							API.videogularElement.bind("mousemove", onMouseMove);
 						}
 						else {
 							scope.animationClass = "";
 							$timeout.cancel(hideInterval);
+							API.videogularElement.unbind("mousemove", onMouseMove);
 							showControls();
 						}
 					});
@@ -67,7 +72,7 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 		return {
 			restrict: "E",
 			require: "^videogular",
-			template: "<div class='iconButton' ng-click='onClickPlayPause()' ng-class='playPauseIcon'></div>",
+			template: "<button class='iconButton' ng-click='onClickPlayPause()' ng-class='playPauseIcon' aria-label='Play/Pause'></button>",
 			link: function (scope, elem, attr, API) {
 				function setState(newState) {
 					switch (newState) {
@@ -154,12 +159,24 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 		return {
 			restrict: "AE",
 			require: "^videogular",
-			replace: true,
+			transclude: true,
+			template: '<div role="slider" aria-valuemax="{{ariaTime(API.totalTime)}}" ' +
+					'aria-valuenow="{{ariaTime(API.currentTime)}}" ' +
+					'aria-valuemin="0" aria-label="Time scrub bar" tabindex="0" ' +
+			        'ng-transclude ng-keydown="onScrubBarKeyDown($event)"></div>',
 			link: function (scope, elem, attr, API) {
 				var isSeeking = false;
 				var isPlaying = false;
 				var isPlayingWhenSeeking = false;
 				var touchStartX = 0;
+				var LEFT = 37;
+				var RIGHT = 39;
+				var NUM_PERCENT = 1;
+
+				scope.API = API;
+				scope.ariaTime = function(time) {
+					return (time === 0) ? "0" : Math.round(time.getTime() / 1000);
+				};
 
 				function onScrubBarTouchStart(event) {
 					var touches = event.touches;
@@ -248,6 +265,19 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 
 					scope.$apply();
 				}
+
+				scope.onScrubBarKeyDown = function(event) {
+					var currentPercent = API.currentTime.getTime() / API.totalTime.getTime() * 100;
+
+					if (event.which === LEFT || event.keyCode === LEFT) {
+						API.seekTime(currentPercent - NUM_PERCENT, true);
+						event.preventDefault();
+					}
+					else if (event.which === RIGHT || event.keyCode === RIGHT) {
+						API.seekTime(currentPercent + NUM_PERCENT, true);
+						event.preventDefault();
+					}
+				};
 
 				function seekTime(time) {
 					API.seekTime(time, false);
@@ -393,7 +423,6 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					var volumeHeight = parseInt(volumeBackElem.prop("offsetHeight"));
 					var value = event.offsetY * 100 / volumeHeight;
 					var volValue = 1 - (value / 100);
-					updateVolumeView(volValue * 100);
 
 					API.setVolume(volValue);
 				};
@@ -416,19 +445,15 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 						var volumeHeight = parseInt(volumeBackElem.prop("offsetHeight"));
 						var value = event.offsetY * 100 / volumeHeight;
 						var volValue = 1 - (value / 100);
-						updateVolumeView(volValue * 100);
 
 						API.setVolume(volValue);
 					}
 				};
 
 				function updateVolumeView(value) {
+					value = value * 100;
 					volumeValueElem.css("height", value + "%");
 					volumeValueElem.css("top", (100 - value) + "%");
-				}
-
-				function onSetVolume(newVolume) {
-					updateVolumeView(newVolume * 100);
 				}
 
 				function onChangeVisibility(value) {
@@ -445,7 +470,7 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					},
 					function (newVal, oldVal) {
 						if (newVal != oldVal) {
-							onSetVolume(newVal);
+							updateVolumeView(newVal);
 						}
 					}
 				);
@@ -459,9 +484,14 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 		return {
 			restrict: "E",
 			require: "^videogular",
-			template: "<div class='iconButton' ng-click='onClickMute()' ng-class='muteIcon'></div>",
+			template: "<button class='iconButton' ng-class='muteIcon'" +
+				" ng-click='onClickMute()' ng-focus='onMuteButtonFocus()' ng-blur='onMuteButtonLoseFocus()' ng-keydown='onMuteButtonKeyDown($event)'" +
+				" aria-label='Mute'></button>",
 			link: function (scope, elem, attr, API) {
 				var isMuted = false;
+				var UP = 38;
+				var DOWN = 40;
+				var CHANGE_PER_PRESS = 0.05;
 
 				scope.onClickMute = function onClickMute() {
 					if (isMuted) {
@@ -475,6 +505,27 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 					isMuted = !isMuted;
 
 					API.setVolume(scope.currentVolume);
+				};
+
+				scope.onMuteButtonFocus = function() {
+					scope.volumeVisibility = 'visible';
+				};
+
+				scope.onMuteButtonLoseFocus = function() {
+					scope.volumeVisibility = 'hidden';
+				};
+
+				scope.onMuteButtonKeyDown = function(event) {
+					var currentVolume = (API.volume != null) ? API.volume : 1;
+
+					if (event.which === UP || event.keyCode === UP) {
+						API.setVolume(currentVolume + CHANGE_PER_PRESS);
+						event.preventDefault();
+					}
+					else if (event.which === DOWN || event.keyCode === DOWN) {
+						API.setVolume(currentVolume - CHANGE_PER_PRESS);
+						event.preventDefault();
+					}
 				};
 
 				function onSetVolume(newVolume) {
@@ -540,11 +591,9 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
 				vgEnterFullScreenIcon: "=",
 				vgExitFullScreenIcon: "="
 			},
-			template: "<div class='iconButton' ng-click='onClickFullScreen()' ng-class='fullscreenIcon'></div>",
+			template: "<button class='iconButton' ng-click='onClickFullScreen()' ng-class='fullscreenIcon' aria-label='Toggle full screen'></button>",
 			link: function (scope, elem, attr, API) {
 				function onChangeFullScreen(isFullScreen) {
-					var result =
-
 					scope.fullscreenIcon = {enter: !isFullScreen, exit: isFullScreen};
 				}
 

@@ -1,5 +1,5 @@
 /**
- * @license Videogular v0.7.1 http://videogular.com
+ * @license Videogular v0.7.2 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -27,7 +27,7 @@
 angular.module("com.2fdevs.videogular.plugins.controls", [])
 	.directive(
 	"vgControls",
-	["$timeout", "VG_STATES", function ($timeout, VG_STATES) {
+	["$timeout", function ($timeout) {
 		return {
 			restrict: "E",
 			require: "^videogular",

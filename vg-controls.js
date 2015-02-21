@@ -1,5 +1,5 @@
 /**
- * @license Videogular v1.0.0 http://videogular.com
+ * @license Videogular v1.0.1 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -9,7 +9,7 @@
  * @restrict E
  * @description
  * This directive acts as a container and you will need other directives to control the media.
- * Inside this directive you can add other directives like vg-play-pause-button and vg-scrubbar.
+ * Inside this directive you can add other directives like vg-play-pause-button and vg-scrub-bar.
  *
  * @param {boolean=false} vgAutohide Boolean variable or value to activate autohide.
  * @param {number=2000} vgAutohideTime Number variable or value that represents the time in milliseconds that will wait vgControls until it hides.
@@ -248,16 +248,16 @@ angular.module("com.2fdevs.videogular.plugins.controls")
  * @name com.2fdevs.videogular.plugins.controls.directive:vgScrubBarCurrentTime
  * @restrict E
  * @description
- * Layer inside vg-scrubbar to display the current time.
+ * Layer inside vg-scrub-bar to display the current time.
  *
  * ```html
  * <videogular vg-theme="config.theme.url">
  *    <vg-media vg-src="sources"></vg-media>
  *
  *    <vg-controls vg-autohide='config.autohide' vg-autohide-time='config.autohideTime'>
- *        <vg-scrubbar>
+ *        <vg-scrub-bar>
  *            <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
- *        </vg-scrubbar>
+ *        </vg-scrub-bar>
  *    </vg-controls>
  * </videogular>
  * ```
@@ -503,7 +503,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
  * Adds a time display inside vg-controls to play and pause media.
  * You have three scope variables to show current time, time left and total time.
  *
- * Those scope variables are type Date so you can add a date filter to show the time as you wish.
+ * Those scope variables are in milliseconds, you can add a date filter to show the time as you wish.
  *
  * ```html
  * <videogular vg-theme="config.theme.url">

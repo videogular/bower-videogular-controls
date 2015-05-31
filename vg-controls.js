@@ -1,5 +1,5 @@
 /**
- * @license videogular v1.2.1 http://videogular.com
+ * @license videogular v1.2.2 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -234,9 +234,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                         return API.currentState;
                     },
                     function (newVal, oldVal) {
-                        if (newVal != oldVal) {
-                            scope.setState(newVal);
-                        }
+                        scope.setState(newVal);
                     }
                 );
             }
@@ -347,38 +345,41 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                 "vgCuePoints": "="
             },
             link: function (scope, elem, attr, API) {
-                var totalTimeWatch;
-
                 scope.onPlayerReady = function onPlayerReady() {
                     scope.updateCuePoints(scope.vgCuePoints);
-                    totalTimeWatch();
                 };
 
                 scope.updateCuePoints = function onUpdateCuePoints(cuePoints) {
-                    var totalWidth = parseInt(elem[0].clientWidth);
+                    var totalWidth;
 
-                    for (var i = 0, l = cuePoints.length; i < l; i++) {
-                        var cuePointDuration = (cuePoints[i].timeLapse.end - cuePoints[i].timeLapse.start) * 1000;
-                        var position = (cuePoints[i].timeLapse.start * 100 / API.totalTime * 1000) + "%";
-                        var percentWidth = 0;
+                    if (cuePoints) {
+                        totalWidth = parseInt(elem[0].clientWidth);
 
-                        if (typeof cuePointDuration === 'number' && API.totalTime) {
-                            percentWidth = ((cuePointDuration * 100) / API.totalTime) + "%";
+                        for (var i = 0, l = cuePoints.length; i < l; i++) {
+                            var cuePointDuration = (cuePoints[i].timeLapse.end - cuePoints[i].timeLapse.start) * 1000;
+                            var position = (cuePoints[i].timeLapse.start * 100 / API.totalTime * 1000) + "%";
+                            var percentWidth = 0;
+
+                            if (typeof cuePointDuration === 'number' && API.totalTime) {
+                                percentWidth = ((cuePointDuration * 100) / API.totalTime) + "%";
+                            }
+
+                            cuePoints[i].$$style = {
+                                width: percentWidth,
+                                left: position
+                            };
                         }
-
-                        cuePoints[i].$$style = {
-                            width: percentWidth,
-                            left: position
-                        };
                     }
                 };
 
-                totalTimeWatch = scope.$watch(
+                scope.$watch("vgCuePoints", scope.updateCuePoints);
+
+                scope.$watch(
                     function () {
                         return API.totalTime;
                     },
                     function (newVal, oldVal) {
-                        if (newVal > 0) scope.onPlayerReady(newVal);
+                        if (newVal > 0) scope.onPlayerReady();
                     }
                 );
             }

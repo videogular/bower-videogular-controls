@@ -1,5 +1,5 @@
 /**
- * @license videogular v1.2.2 http://videogular.com
+ * @license videogular v1.2.3 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -799,6 +799,8 @@ angular.module("com.2fdevs.videogular.plugins.controls")
 
                 scope.onSetVolume = function onSetVolume(newVolume) {
                     scope.currentVolume = newVolume;
+
+                    isMuted = (scope.currentVolume === 0);
 
                     // if it's not muted we save the default volume
                     if (!isMuted) {

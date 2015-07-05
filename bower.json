@@ -4,4 +4,5 @@
   "main": "./vg-controls.js",
   "dependencies": {
     "videogular": "1.2.4"
+  }
 }

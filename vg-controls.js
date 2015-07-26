@@ -1,5 +1,5 @@
 /**
- * @license videogular v1.2.4 http://videogular.com
+ * @license videogular v1.2.5 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -107,6 +107,8 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
                         scope.$watch("vgAutohideTime", scope.setAutohideTime);
                     }
                 }
+
+
             }
         }
     }]

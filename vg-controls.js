@@ -1,5 +1,5 @@
 /**
- * @license videogular v1.4.0 http://videogular.com
+ * @license videogular v1.4.1 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -505,7 +505,40 @@ angular.module("com.2fdevs.videogular.plugins.controls")
  * @description
  * Layer inside vg-scrub-bar to display thumbnails.
  *
- * Param thumbnails could be a string url pointing to a strip of thumbnails or an array of thumbnails
+ * Param thumbnails could be a string url pointing to a strip of thumbnails or an array of objects with the same
+ * format that you can find in cue points.
+ *
+ * **Strip of thumbnails**
+ * Must be an image with exactly 100 thumbnails. Recommended size per each thumbnail 107x60
+ * Example of param value: "assets/images/strip-of-thumbnails.jpg"
+ *
+ * To create a strip of thumbnails you can use ffmpeg:
+ * ffmpeg -loglevel panic -y -i app/assets/videos/videogular.mp4 -frames 1 -q:v 1 -vf
+ * "select=not(mod(n\,29)),scale=-1:60,tile=100x1" app/assets/thumbnails/thumbnail.jpg
+ *
+ * **List of thumbnails**
+ * Array with a list of cue points as images. You can specify start or a lapse with start and end.
+ * Example of param value:
+ *
+ * [
+ *     {
+ *         "timeLapse": {
+ *             "start": 5
+ *         },
+ *         params: {
+ *             "thumbnail": "assets/thumbnails/thumbnail-shown-at-second-5.jpg"
+ *         }
+ *     },
+ *     {
+ *         "timeLapse": {
+ *             "start": 49,
+ *             "end": 60
+ *         },
+ *         "params": {
+ *             "thumbnail": "assets/thumbnails/thumbnail-shown-between-seconds-49-and-60.jpg"
+ *         }
+ *     }
+ * ]
  *
  * <pre>
  * <videogular vg-theme="config.theme.url">

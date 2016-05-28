@@ -1,5 +1,5 @@
 /**
- * @license videogular v1.4.3 http://videogular.com
+ * @license videogular v1.4.4 http://videogular.com
  * Two Fucking Developers http://twofuckingdevelopers.com
  * License: MIT
  */
@@ -108,7 +108,14 @@ angular.module("com.2fdevs.videogular.plugins.controls", [])
                     }
                 }
 
-
+                scope.$watch(
+                    function () {
+                        return API.currentState;
+                    },
+                    function (newVal, oldVal) {
+                        if (scope.vgAutohide) scope.showControls();
+                    }
+                );
             }
         }
     }]
@@ -644,24 +651,26 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                             scope.thumbnails = {
                                 "background-image": 'none'
                             };
+                            
+                            if (scope.vgThumbnails) {
+                                for (var i=0, l=scope.vgThumbnails.length; i<l; i++) {
+                                    var th = scope.vgThumbnails[i];
 
-                            for (var i=0, l=scope.vgThumbnails.length; i<l; i++) {
-                                var th = scope.vgThumbnails[i];
-
-                                if (th.timeLapse.end >= 0) {
-                                    if (lapse.start >= th.timeLapse.start && (lapse.end <= th.timeLapse.end || lapse.end <= th.timeLapse.start)) {
-                                        scope.thumbnails = {
-                                            "background-image": 'url("' + th.params.thumbnail + '")'
-                                        };
-                                        break;
+                                    if (th.timeLapse.end >= 0) {
+                                        if (lapse.start >= th.timeLapse.start && (lapse.end <= th.timeLapse.end || lapse.end <= th.timeLapse.start)) {
+                                            scope.thumbnails = {
+                                                "background-image": 'url("' + th.params.thumbnail + '")'
+                                            };
+                                            break;
+                                        }
                                     }
-                                }
-                                else {
-                                    if (th.timeLapse.start >= lapse.start && th.timeLapse.start <= lapse.end) {
-                                        scope.thumbnails = {
-                                            "background-image": 'url("' + th.params.thumbnail + '")'
-                                        };
-                                        break;
+                                    else {
+                                        if (th.timeLapse.start >= lapse.start && th.timeLapse.start <= lapse.end) {
+                                            scope.thumbnails = {
+                                                "background-image": 'url("' + th.params.thumbnail + '")'
+                                            };
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -673,7 +682,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
 
                         scope.updateThumbnails(second);
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onTouchMove = function($event) {
@@ -683,19 +692,19 @@ angular.module("com.2fdevs.videogular.plugins.controls")
 
                         scope.updateThumbnails(second);
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onMouseLeave = function(event) {
                         scope.thumbnails = false;
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onTouchLeave = function(event) {
                         scope.thumbnails = false;
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onDestroy = function() {
@@ -829,7 +838,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                         API.pause();
                         API.seekTime(touchX * API.mediaElement[0].duration / slider.scrollWidth);
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarTouchEnd = function onScrubBarTouchEnd($event) {
@@ -840,7 +849,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                         }
                         isSeeking = false;
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarTouchMove = function onScrubBarTouchMove($event) {
@@ -859,14 +868,14 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                             API.seekTime(touchX * API.mediaElement[0].duration / slider.scrollWidth);
                         }
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarTouchLeave = function onScrubBarTouchLeave(event) {
                         isSeeking = false;
                         scope.thumbnails = false;
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarMouseDown = function onScrubBarMouseDown(event) {
@@ -878,7 +887,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
 
                         API.seekTime(event.offsetX * API.mediaElement[0].duration / slider.scrollWidth);
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarMouseUp = function onScrubBarMouseUp(event) {
@@ -891,7 +900,7 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                         isSeeking = false;
                         //API.seekTime(event.offsetX * API.mediaElement[0].duration / slider.scrollWidth);
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarMouseMove = function onScrubBarMouseMove(event) {
@@ -907,14 +916,14 @@ angular.module("com.2fdevs.videogular.plugins.controls")
                             API.seekTime(event.offsetX * API.mediaElement[0].duration / slider.scrollWidth);
                         }
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarMouseLeave = function onScrubBarMouseLeave(event) {
                         isSeeking = false;
                         scope.thumbnails = false;
 
-                        scope.$apply();
+                        scope.$digest();
                     };
 
                     scope.onScrubBarKeyDown = function onScrubBarKeyDown(event) {
